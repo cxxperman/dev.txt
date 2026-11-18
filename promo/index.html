@@ -1,0 +1,339 @@
+<title>Ролик dev.txt</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* One vertical stage (9:16) centred on a dark room, a thin transport bar under it.
+     The look is the ecosystem's own: dark glass, the orange pixel sprites, Segoe UI Variable. */
+  :root {
+    color-scheme: dark;
+    --bg: #09090D;
+    --label: rgb(255 255 255 / 0.96);
+    --label-2: rgb(255 255 255 / 0.64);
+    --label-3: rgb(255 255 255 / 0.42);
+    --edge: rgb(255 255 255 / 0.12);
+    --fill: rgb(255 255 255 / 0.08);
+    --fill-2: rgb(255 255 255 / 0.16);
+    --brand: #F08A4B;
+    --font: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg); color: var(--label); font: 400 14px/1.4 var(--font);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    padding-block: 12px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box; overflow: hidden;
+  }
+  .stage { position: relative; flex: 1 1 auto; min-height: 0; aspect-ratio: 9 / 16; max-width: 100%; border-radius: 18px; overflow: hidden; border: 1px solid var(--edge); }
+  canvas { display: block; width: 100%; height: 100%; }
+  .play {
+    position: absolute; inset: 0; margin: auto; width: 84px; height: 84px; border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 0.3); background: rgb(20 20 26 / 0.6); backdrop-filter: blur(14px);
+    color: var(--label); cursor: pointer; display: grid; place-items: center;
+  }
+  .play svg { width: 30px; height: 30px; margin-left: 4px; }
+  .play:hover { background: rgb(40 40 48 / 0.7); }
+  .bar { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 460px; flex: none; }
+  .bar button {
+    flex: none; height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid var(--edge);
+    background: var(--fill); color: var(--label); font: 600 12.5px var(--font); cursor: pointer;
+  }
+  .bar button:hover { background: var(--fill-2); }
+  .bar input { flex: 1 1 auto; min-width: 0; accent-color: var(--brand); }
+  .bar output { flex: none; width: 44px; text-align: right; color: var(--label-2); font-variant-numeric: tabular-nums; font-size: 12px; }
+  :focus-visible { outline: 3px solid rgb(240 138 75 / 0.6); outline-offset: 2px; }
+</style>
+
+<div class="stage">
+  <canvas id="stage" width="1080" height="1920" aria-label="Ролик о приложениях dev.txt"></canvas>
+  <button class="play" id="big" aria-label="Смотреть ролик"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></button>
+</div>
+<div class="bar">
+  <button id="toggle">Смотреть</button>
+  <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Перемотка">
+  <output id="time">0:00</output>
+</div>
+
+<script>
+'use strict';
+/* The whole film is a pure function of time: drawAt(t) paints second t. That is what lets the same
+   code play here and be rendered frame by frame into a video file. */
+const W = 1080, H = 1920;
+const cv = document.getElementById('stage'), g = cv.getContext('2d');
+const FONT = "'Segoe UI Variable Display', 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif";
+const BRAND = '#F08A4B', EYE = '#1A1A1E';
+const SPRITES = {"core":[".....#....","....##....",".########.","##########",".########.","..######..","...##E#...","...##E#...","..######..",".########.","##########",".########."],"kapsula":[".#.......#.",".##.....##.",".#########.","###########","##E#####E##","##E#####E##","###########",".#########.",".#.#...#.#."],"aura":["....##......","...####....#","..######..##",".###########","##E########.","##E########.",".###########","..######..##","...####....#","....##......"],"maska":["#..........#","##........##","############","###E####E###","###E####E###","############",".####..####.","..##....##.."],"arkada":[".####..####.","############","##E######E##","#EEE####E#E#","##E######E##","############","####....####",".##......##."],"dock":["....####....","....#E##....",".##.#E##.##.",".##.####.##.",".##.####.##.","............","############",".##########."],"smena":["#######.....","#######.....","##..........","##.#########","##.##E###E##","##.##E###E##","...#########","...#########"],"metla":[".......##.","......##..",".....##...","....##....","...##.....","..####....",".######...",".##E###...","###E####..","########..","#.#.#.#.#.","#.#.#.#.#."]};
+const IMAGES = { core: 'img/core.png', kapsula: 'img/kapsula.png', kapsulaPet: 'img/kapsula-pet.png', aura: 'img/aura.png', dock: 'img/dock.png', apps: 'img/apps.png', smena: 'img/smena.png', metla: 'img/metla.png', scenarios: 'img/scenarios.png' };
+const img = {};
+
+// ── timing ──
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const span = (t, a, b) => clamp((t - a) / (b - a));
+const out = p => 1 - Math.pow(1 - clamp(p), 4);          // the ecosystem's curve, near cubic-bezier(.22,1,.36,1)
+const inOut = p => { p = clamp(p); return p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; };
+
+const FEATURES = [
+  { id: 'core', title: 'Всё в одном окне', sub: 'Поставить, обновить, настроить', image: 'core', chips: ['приложения', 'сценарии', 'настройки'] },
+  { id: 'kapsula', title: 'Остров для Windows', sub: 'Музыка, уведомления, буфер и зверёк', stack: ['kapsula', 'kapsulaPet'], chips: ['плеер', 'зверёк', 'заметки'] },
+  { id: 'aura', title: 'Голос как из студии', sub: 'Обработка микрофона на лету', image: 'aura', pan: 0.08, chips: ['готовый звук', 'шумодав', 'авто-уровень'] },
+  { id: 'dock', title: 'Док с виджетами', sub: 'Программы, музыка, погода, календарь', image: 'apps', strip: 'dock', chips: ['виджеты', 'счётчики', 'меню приложений'] },
+  { id: 'smena', title: 'Свой Alt+Tab', sub: 'Живые превью окон', image: 'smena', chips: ['превью', 'по порядку', 'без мыши'] },
+  { id: 'metla', title: 'Уборка без сюрпризов', sub: 'Удаляется только то, что вы выбрали', image: 'metla', pan: 0.18, chips: ['временные файлы', 'автозапуск', 'программы'], count: 6.4 },
+  { id: 'scenarios', sprite: 'core', brand: 'core', title: 'Приложения помогают друг другу', sub: 'Звонок — включилась обработка. Игра — остров спрятался', image: 'scenarios', pan: 0.08, chips: ['звонок', 'игра', 'как было'] },
+];
+const T_INTRO = 3.4, T_GRID = 3.8, T_FEATURE = 3.9, T_OUTRO = 3.8;
+const T_FEATURES = T_INTRO + T_GRID;
+const T_END = T_FEATURES + FEATURES.length * T_FEATURE;
+const DURATION = T_END + T_OUTRO;
+
+// ── drawing blocks ──
+function rr(x, y, w, h, r) { g.beginPath(); g.roundRect(x, y, w, h, r); }
+function text(s, x, y, size, weight, color, align) {
+  g.font = weight + ' ' + size + 'px ' + FONT; g.fillStyle = color; g.textAlign = align || 'center'; g.textBaseline = 'alphabetic';
+  g.fillText(s, x, y);
+}
+function backdrop(t) {
+  g.fillStyle = '#09090D'; g.fillRect(0, 0, W, H);
+  const blob = (x, y, r, c, a) => {
+    const gr = g.createRadialGradient(x, y, 0, x, y, r);
+    gr.addColorStop(0, `rgba(${c},${a})`); gr.addColorStop(0.45, `rgba(${c},${a * 0.55})`); gr.addColorStop(1, `rgba(${c},0)`);
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  };
+  const d = Math.sin(t * 0.35) * 60, e = Math.cos(t * 0.28) * 70;
+  blob(120 + d, 180 + e, 1050, '240,138,75', 0.36);
+  blob(960 - d, 1560 + e, 980, '10,132,255', 0.24);
+  blob(1000 + e, 260 - d, 760, '138,92,246', 0.18);
+}
+function glass(x, y, w, h, r, strength) {
+  const gr = g.createLinearGradient(0, y, 0, y + h);
+  gr.addColorStop(0, `rgba(255,255,255,${0.15 * strength})`); gr.addColorStop(1, `rgba(255,255,255,${0.075 * strength})`);
+  rr(x, y, w, h, r); g.fillStyle = gr; g.fill();
+  const rim = g.createLinearGradient(x, y, x + w * 0.7, y + h);
+  rim.addColorStop(0, 'rgba(255,255,255,0.5)'); rim.addColorStop(0.32, 'rgba(255,255,255,0.13)'); rim.addColorStop(0.68, 'rgba(255,255,255,0.05)'); rim.addColorStop(1, 'rgba(255,255,255,0.17)');
+  g.lineWidth = 2; g.strokeStyle = rim; g.stroke();
+}
+// A sprite that assembles from its pixels: each one flies in a little late, by its place in the drawing
+function sprite(name, cx, cy, size, p) {
+  const rows = SPRITES[name], cols = rows[0].length, n = Math.max(cols, rows.length), cell = size / n;
+  const x0 = cx - cols * cell / 2, y0 = cy - rows.length * cell / 2;
+  for (let y = 0; y < rows.length; y++) for (let x = 0; x < cols; x++) {
+    const c = rows[y][x];
+    if (c === '.') continue;
+    const k = out(span(p, (x + y) / (cols + rows.length) * 0.55, (x + y) / (cols + rows.length) * 0.55 + 0.45));
+    if (k <= 0) continue;
+    const s = cell * (0.2 + 0.8 * k), dx = (1 - k) * 26, dy = (1 - k) * 12;
+    g.globalAlpha *= k; g.fillStyle = c === 'E' ? EYE : BRAND;
+    g.fillRect(x0 + x * cell + (cell - s) / 2 + dx, y0 + y * cell + (cell - s) / 2 + dy, s + 0.6, s + 0.6);
+    g.globalAlpha /= k;
+  }
+}
+// «kapsula.txt™»: the name bright, the signature dimmed, the mark small and raised
+function brand(name, cx, y, size, weight) {
+  g.font = weight + ' ' + size + 'px ' + FONT;
+  const a = g.measureText(name).width, b = g.measureText('.txt').width;
+  g.font = '400 ' + size * 0.42 + 'px ' + FONT; const c = g.measureText('™').width;
+  let x = cx - (a + b + c) / 2;
+  text(name, x, y, size, weight, 'rgba(255,255,255,0.96)', 'left'); x += a;
+  text('.txt', x, y, size, weight, 'rgba(255,255,255,0.64)', 'left'); x += b;
+  text('™', x + 2, y - size * 0.42, size * 0.42, 400, 'rgba(255,255,255,0.42)', 'left');
+}
+function picture(name, x, y, w, r) {
+  const im = img[name]; if (!im) return 0;
+  const h = w * im.naturalHeight / im.naturalWidth;
+  g.save(); rr(x, y, w, h, r); g.clip(); g.drawImage(im, x, y, w, h); g.restore();
+  rr(x, y, w, h, r); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.16)'; g.stroke();
+  return h;
+}
+function chips(list, cy, p) {
+  g.font = '600 30px ' + FONT;
+  const pad = 26, gap = 14, widths = list.map(s => g.measureText(s).width + pad * 2);
+  let x = (W - widths.reduce((a, b) => a + b, 0) - gap * (list.length - 1)) / 2;
+  list.forEach((s, i) => {
+    const k = out(span(p, 0.25 + i * 0.1, 0.6 + i * 0.1));
+    g.save(); g.globalAlpha *= k; g.translate(0, (1 - k) * 18);
+    if (i === 0) { rr(x, cy - 30, widths[i], 60, 30); g.fillStyle = 'rgba(240,138,75,0.92)'; g.fill(); }
+    else glass(x, cy - 30, widths[i], 60, 30, 1);
+    text(s, x + widths[i] / 2, cy + 10, 30, 600, i === 0 ? '#fff' : 'rgba(255,255,255,0.9)');
+    g.restore(); x += widths[i] + gap;
+  });
+}
+function steps(done, live) {
+  const n = FEATURES.length, gap = 12, w = (W - 160 - gap * (n - 1)) / n;
+  for (let i = 0; i < n; i++) {
+    rr(80 + i * (w + gap), 150, w, 7, 4); g.fillStyle = 'rgba(255,255,255,0.14)'; g.fill();
+    const f = i < done ? 1 : i === done ? live : 0;
+    if (f > 0) { rr(80 + i * (w + gap), 150, w * f, 7, 4); g.fillStyle = BRAND; g.fill(); }
+  }
+}
+
+// ── scenes ──
+function intro(t) {
+  const leave = 1 - inOut(span(t, T_INTRO - 0.45, T_INTRO));
+  g.save(); g.globalAlpha = leave; g.translate(0, (leave - 1) * 40);
+  sprite('core', W / 2, 760, 340, span(t, 0.25, 1.5));
+  const k = out(span(t, 1.15, 1.9));
+  g.globalAlpha = leave * k; g.translate(0, (1 - k) * 26);
+  brand('dev', W / 2, 1080, 150, 700);
+  const k2 = out(span(t, 1.6, 2.3));
+  g.globalAlpha = leave * k2;
+  text('Приложения для Windows', W / 2, 1180, 46, 400, 'rgba(255,255,255,0.64)');
+  text('в одном стиле', W / 2, 1242, 46, 400, 'rgba(255,255,255,0.64)');
+  g.restore();
+}
+function grid(t0) {
+  const t = t0 - T_INTRO, leave = 1 - inOut(span(t, T_GRID - 0.45, T_GRID));
+  const ids = ['kapsula', 'aura', 'maska', 'arkada', 'dock', 'smena', 'metla', 'core'];
+  g.save(); g.globalAlpha = leave; g.translate(0, (leave - 1) * 40);
+  const k = out(span(t, 0, 0.6));
+  g.save(); g.globalAlpha *= k; g.translate(0, (1 - k) * 24);
+  text('Одна экосистема', W / 2, 400, 92, 700, 'rgba(255,255,255,0.96)');
+  text('Восемь приложений. Один стиль. Одни настройки', W / 2, 474, 38, 400, 'rgba(255,255,255,0.64)');
+  g.restore();
+  const tile = 210, gapX = 36, gapY = 96, cols = 2, x0 = (W - (tile * 2 + 250 * 2 + gapX)) / 2;
+  ids.forEach((id, i) => {
+    const col = i % cols, row = Math.floor(i / cols);
+    const cellW = (W - 160 - gapX) / cols, x = 80 + col * (cellW + gapX), y = 610 + row * 250;
+    const p = span(t, 0.35 + i * 0.11, 1.1 + i * 0.11), a = out(p);
+    g.save(); g.globalAlpha *= a; g.translate(0, (1 - a) * 30);
+    glass(x, y, cellW, 190, 36, 0.6);
+    rr(x + 26, y + 26, 138, 138, 28); g.fillStyle = 'rgba(255,255,255,0.08)'; g.fill();
+    sprite(id, x + 95, y + 95, 96, span(t, 0.5 + i * 0.11, 1.5 + i * 0.11));
+    g.font = '600 46px ' + FONT;
+    const nw = g.measureText(id).width;
+    text(id, x + 196, y + 112, 46, 600, 'rgba(255,255,255,0.96)', 'left');
+    text('.txt', x + 196 + nw, y + 112, 46, 600, 'rgba(255,255,255,0.5)', 'left');
+    g.restore();
+  });
+  g.restore();
+}
+function feature(t0) {
+  const i = Math.min(FEATURES.length - 1, Math.floor((t0 - T_FEATURES) / T_FEATURE)), f = FEATURES[i];
+  const t = t0 - T_FEATURES - i * T_FEATURE;
+  const enter = out(span(t, 0, 0.55)), leave = 1 - inOut(span(t, T_FEATURE - 0.4, T_FEATURE));
+  steps(i, clamp(t / T_FEATURE));
+  g.save(); g.globalAlpha = leave; g.translate(0, (leave - 1) * 36);
+
+  // who is talking: the sprite and the product name
+  g.save(); g.globalAlpha *= enter; g.translate(0, (1 - enter) * 20);
+  g.font = '600 44px ' + FONT;
+  const name = f.brand || f.id, nw = g.measureText(name + '.txt').width + 26, bx = (W - nw - 76) / 2;
+  sprite(f.sprite || f.id, bx + 30, 268, 60, span(t, 0, 0.7));
+  text(name, bx + 76, 284, 44, 600, 'rgba(255,255,255,0.96)', 'left');
+  text('.txt', bx + 76 + g.measureText(name).width, 284, 44, 600, 'rgba(255,255,255,0.5)', 'left');
+  g.restore();
+
+  const k1 = out(span(t, 0.12, 0.7));
+  g.save(); g.globalAlpha *= k1; g.translate(0, (1 - k1) * 26);
+  const big = f.title.length > 22 ? 70 : 88;
+  if (f.title.length > 22) { const cut = f.title.lastIndexOf(' ', 16); text(f.title.slice(0, cut), W / 2, 420, big, 700, 'rgba(255,255,255,0.96)'); text(f.title.slice(cut + 1), W / 2, 500, big, 700, 'rgba(255,255,255,0.96)'); }
+  else text(f.title, W / 2, 450, big, 700, 'rgba(255,255,255,0.96)');
+  g.restore();
+  const k2 = out(span(t, 0.22, 0.8)), subY = f.title.length > 22 ? 572 : 528;
+  g.save(); g.globalAlpha *= k2; g.translate(0, (1 - k2) * 22);
+  const sub = f.sub.length > 44 ? [f.sub.slice(0, f.sub.indexOf('. ') + 1), f.sub.slice(f.sub.indexOf('. ') + 2)] : [f.sub];
+  sub.forEach((line, n) => text(line, W / 2, subY + n * 50, 38, 400, 'rgba(255,255,255,0.64)'));
+  g.restore();
+
+  // the picture grows from slightly below, the way a window opens
+  const k3 = out(span(t, 0.3, 1.05)), top = subY + sub.length * 50 + 60;
+  g.save(); g.globalAlpha *= k3; g.translate(W / 2, top + 330); g.scale(0.9 + 0.1 * k3, 0.9 + 0.1 * k3); g.translate(-W / 2, -(top + 330)); g.translate(0, (1 - k3) * 60);
+  let y = top;
+  const bottom = 1610;   // the picture area runs from under the subtitle down to the chips
+  if (f.strip) {
+    // a wide strip (the dock) pans slowly so that every widget passes by
+    const im = img[f.strip], h = 150, w = h * im.naturalWidth / im.naturalHeight, pan = inOut(span(t, 0.5, T_FEATURE - 0.5));
+    g.save(); rr(60, y, 960, h, 30); g.clip(); g.fillStyle = '#0b0b10'; g.fillRect(60, y, 960, h);
+    g.drawImage(im, 60 - pan * (w - 960), y, w, h); g.restore();
+    rr(60, y, 960, h, 30); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.16)'; g.stroke();
+    y += h + 30;
+  }
+  let ph = bottom - y;
+  if (f.stack) {
+    // small screenshots: two of them one under the other, the second a moment later
+    f.stack.forEach((name, n) => {
+      const a = out(span(t, 0.3 + n * 0.25, 1.05 + n * 0.25));
+      g.save(); g.globalAlpha *= a; g.translate(0, (1 - a) * 40);
+      y += picture(name, 60, y, 960, 34) + 26;
+      g.restore();
+    });
+  } else {
+    // a wide window in a tall frame: fill the frame by height and drift across it, so the details are large enough to read
+    const im = img[f.image];
+    if (im) {
+      const w = ph * im.naturalWidth / im.naturalHeight, pan = inOut(span(t, 0.4, T_FEATURE - 0.3)) * (f.pan === undefined ? 1 : f.pan);
+      g.save(); rr(60, y, 960, ph, 34); g.clip(); g.drawImage(im, 60 - pan * Math.max(0, w - 960), y, w, ph); g.restore();
+      rr(60, y, 960, ph, 34); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.16)'; g.stroke();
+    }
+  }
+  if (f.count) {
+    // the big counting number sits on the picture, in its own glass plate
+    const kc = span(t, 0.9, 2.3), v = (f.count * out(kc)).toFixed(1).replace('.', ',');
+    g.save(); g.globalAlpha *= out(span(t, 0.8, 1.3));
+    rr(250, y + ph - 230, 580, 190, 44); g.fillStyle = 'rgba(16,16,22,0.92)'; g.fill(); g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,0.2)'; g.stroke();
+    text('можно освободить', W / 2, y + ph - 174, 32, 400, 'rgba(255,255,255,0.6)');
+    text(v + ' ГБ', W / 2, y + ph - 76, 96, 700, BRAND);
+    g.restore();
+  }
+  g.restore();
+  g.save(); chips(f.chips, 1700, span(t, 0.5, 1.9)); g.restore();
+  g.restore();
+}
+function outro(t0) {
+  const t = t0 - T_END;
+  const ids = ['kapsula', 'aura', 'maska', 'arkada', 'dock', 'smena', 'metla'];
+  ids.forEach((id, i) => {
+    const a = out(span(t, 0.1 + i * 0.07, 0.8 + i * 0.07)), x = W / 2 + (i - 3) * 132;
+    g.save(); g.globalAlpha = a; sprite(id, x, 610 + (1 - a) * 30, 84, 1); g.restore();
+  });
+  sprite('core', W / 2, 900, 300, span(t, 0.3, 1.5));
+  const k = out(span(t, 1.0, 1.7));
+  g.save(); g.globalAlpha = k; g.translate(0, (1 - k) * 26);
+  brand('dev', W / 2, 1220, 150, 700);
+  g.restore();
+  const k2 = out(span(t, 1.5, 2.2));
+  g.save(); g.globalAlpha = k2;
+  text('Одна экосистема для Windows', W / 2, 1320, 46, 400, 'rgba(255,255,255,0.64)');
+  text('Сделано в Украине', W / 2, 1400, 34, 400, 'rgba(255,255,255,0.42)');
+  g.restore();
+}
+function drawAt(t) {
+  t = clamp(t, 0, DURATION);
+  g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1;
+  backdrop(t);
+  if (t < T_INTRO) intro(t);
+  else if (t < T_FEATURES) grid(t);
+  else if (t < T_END) feature(t);
+  else outro(t);
+}
+
+// ── playback ──
+const big = document.getElementById('big'), toggle = document.getElementById('toggle'), seek = document.getElementById('seek'), time = document.getElementById('time');
+let now = 0, playing = false, last = 0;
+const POSTER = T_INTRO + 2.9;   // what is shown before anyone presses play: the eight apps
+function show(t) {
+  now = t; drawAt(t);
+  seek.value = Math.round(t / DURATION * 1000);
+  const s = Math.floor(t); time.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+function frame(ts) {
+  if (!playing) return;
+  const dt = Math.min(0.1, (ts - last) / 1000); last = ts;
+  if (now + dt >= DURATION) { show(DURATION); return pause(); }
+  show(now + dt); requestAnimationFrame(frame);
+}
+function play() {
+  if (now >= DURATION - 0.05 || big.hidden === false) now = 0;
+  playing = true; big.hidden = true; toggle.textContent = 'Пауза';
+  last = performance.now(); requestAnimationFrame(frame);
+}
+function pause() { playing = false; toggle.textContent = now >= DURATION - 0.05 ? 'Ещё раз' : 'Смотреть'; }
+big.onclick = play;
+toggle.onclick = () => (playing ? pause() : play());
+seek.oninput = () => { pause(); big.hidden = true; show(seek.value / 1000 * DURATION); toggle.textContent = 'Смотреть'; };
+
+const ready = Promise.all(Object.entries(IMAGES).map(([k, src]) => new Promise(done => {
+  const im = new Image(); im.onload = () => { img[k] = im; done(); }; im.onerror = done; im.src = src;
+}))).then(() => { drawAt(POSTER); });
+drawAt(POSTER);
+window.promo = { W, H, DURATION, drawAt, ready };
+</script>
