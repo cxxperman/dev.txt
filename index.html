@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dev.txt™ — приложения для Windows в одном стиле</title>
+<meta name="description" content="dev.txt™ — бесплатные приложения для Windows с открытым исходным кодом: лаунчер core.txt, остров kapsula.txt, обработка голоса aura.txt. Один вид, одна страница настроек, сделано в Украине.">
+<meta name="theme-color" content="#09090D">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="dev.txt™">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="dev.txt™ — приложения для Windows в одном стиле">
+<meta property="og:description" content="Бесплатные приложения для Windows с открытым исходным кодом. Один лаунчер, один вид, одна страница настроек.">
+<meta property="og:image" content="assets/core-apps.png">
+<meta property="og:image:width" content="1380">
+<meta property="og:image:height" content="960">
+<meta property="og:image:alt" content="Окно лаунчера core.txt с карточками приложений">
+<link rel="icon" href="assets/core.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/core.png">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/kit.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="dt-app">
+<div class="dt-backdrop" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="page">
+
+  <header class="hero">
+    <div class="hero-mark"><!--sprite:core pixels--><svg viewBox="-1 0 12 12" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="5" y="0" width="1" height="1" fill="#F08A4B" style="--i:25"/><rect x="4" y="1" width="1" height="1" fill="#F08A4B" style="--i:23"/><rect x="5" y="1" width="1" height="1" fill="#F08A4B" style="--i:22"/><rect x="1" y="2" width="1" height="1" fill="#F08A4B" style="--i:19"/><rect x="2" y="2" width="1" height="1" fill="#F08A4B" style="--i:18"/><rect x="3" y="2" width="1" height="1" fill="#F08A4B" style="--i:21"/><rect x="4" y="2" width="1" height="1" fill="#F08A4B" style="--i:20"/><rect x="5" y="2" width="1" height="1" fill="#F08A4B" style="--i:19"/><rect x="6" y="2" width="1" height="1" fill="#F08A4B" style="--i:18"/><rect x="7" y="2" width="1" height="1" fill="#F08A4B" style="--i:21"/><rect x="8" y="2" width="1" height="1" fill="#F08A4B" style="--i:20"/><rect x="0" y="3" width="1" height="1" fill="#F08A4B" style="--i:17"/><rect x="1" y="3" width="1" height="1" fill="#F08A4B" style="--i:16"/><rect x="2" y="3" width="1" height="1" fill="#F08A4B" style="--i:19"/><rect x="3" y="3" width="1" height="1" fill="#F08A4B" style="--i:18"/><rect x="4" y="3" width="1" height="1" fill="#F08A4B" style="--i:17"/><rect x="5" y="3" width="1" height="1" fill="#F08A4B" style="--i:16"/><rect x="6" y="3" width="1" height="1" fill="#F08A4B" style="--i:19"/><rect x="7" y="3" width="1" height="1" fill="#F08A4B" style="--i:18"/><rect x="8" y="3" width="1" height="1" fill="#F08A4B" style="--i:17"/><rect x="9" y="3" width="1" height="1" fill="#F08A4B" style="--i:16"/><rect x="1" y="4" width="1" height="1" fill="#F08A4B" style="--i:17"/><rect x="2" y="4" width="1" height="1" fill="#F08A4B" style="--i:16"/><rect x="3" y="4" width="1" height="1" fill="#F08A4B" style="--i:15"/><rect x="4" y="4" width="1" height="1" fill="#F08A4B" style="--i:14"/><rect x="5" y="4" width="1" height="1" fill="#F08A4B" style="--i:17"/><rect x="6" y="4" width="1" height="1" fill="#F08A4B" style="--i:16"/><rect x="7" y="4" width="1" height="1" fill="#F08A4B" style="--i:15"/><rect x="8" y="4" width="1" height="1" fill="#F08A4B" style="--i:14"/><rect x="2" y="5" width="1" height="1" fill="#F08A4B" style="--i:13"/><rect x="3" y="5" width="1" height="1" fill="#F08A4B" style="--i:12"/><rect x="4" y="5" width="1" height="1" fill="#F08A4B" style="--i:15"/><rect x="5" y="5" width="1" height="1" fill="#F08A4B" style="--i:14"/><rect x="6" y="5" width="1" height="1" fill="#F08A4B" style="--i:13"/><rect x="7" y="5" width="1" height="1" fill="#F08A4B" style="--i:12"/><rect x="3" y="6" width="1" height="1" fill="#F08A4B" style="--i:13"/><rect x="4" y="6" width="1" height="1" fill="#F08A4B" style="--i:12"/><rect x="5" y="6" width="1" height="1" fill="#1A1A1E" style="--i:11"/><rect x="6" y="6" width="1" height="1" fill="#F08A4B" style="--i:10"/><rect x="3" y="7" width="1" height="1" fill="#F08A4B" style="--i:10"/><rect x="4" y="7" width="1" height="1" fill="#F08A4B" style="--i:9"/><rect x="5" y="7" width="1" height="1" fill="#1A1A1E" style="--i:8"/><rect x="6" y="7" width="1" height="1" fill="#F08A4B" style="--i:11"/><rect x="2" y="8" width="1" height="1" fill="#F08A4B" style="--i:8"/><rect x="3" y="8" width="1" height="1" fill="#F08A4B" style="--i:7"/><rect x="4" y="8" width="1" height="1" fill="#F08A4B" style="--i:6"/><rect x="5" y="8" width="1" height="1" fill="#F08A4B" style="--i:9"/><rect x="6" y="8" width="1" height="1" fill="#F08A4B" style="--i:8"/><rect x="7" y="8" width="1" height="1" fill="#F08A4B" style="--i:7"/><rect x="1" y="9" width="1" height="1" fill="#F08A4B" style="--i:6"/><rect x="2" y="9" width="1" height="1" fill="#F08A4B" style="--i:5"/><rect x="3" y="9" width="1" height="1" fill="#F08A4B" style="--i:4"/><rect x="4" y="9" width="1" height="1" fill="#F08A4B" style="--i:7"/><rect x="5" y="9" width="1" height="1" fill="#F08A4B" style="--i:6"/><rect x="6" y="9" width="1" height="1" fill="#F08A4B" style="--i:5"/><rect x="7" y="9" width="1" height="1" fill="#F08A4B" style="--i:4"/><rect x="8" y="9" width="1" height="1" fill="#F08A4B" style="--i:7"/><rect x="0" y="10" width="1" height="1" fill="#F08A4B" style="--i:4"/><rect x="1" y="10" width="1" height="1" fill="#F08A4B" style="--i:3"/><rect x="2" y="10" width="1" height="1" fill="#F08A4B" style="--i:2"/><rect x="3" y="10" width="1" height="1" fill="#F08A4B" style="--i:5"/><rect x="4" y="10" width="1" height="1" fill="#F08A4B" style="--i:4"/><rect x="5" y="10" width="1" height="1" fill="#F08A4B" style="--i:3"/><rect x="6" y="10" width="1" height="1" fill="#F08A4B" style="--i:2"/><rect x="7" y="10" width="1" height="1" fill="#F08A4B" style="--i:5"/><rect x="8" y="10" width="1" height="1" fill="#F08A4B" style="--i:4"/><rect x="9" y="10" width="1" height="1" fill="#F08A4B" style="--i:3"/><rect x="1" y="11" width="1" height="1" fill="#F08A4B" style="--i:0"/><rect x="2" y="11" width="1" height="1" fill="#F08A4B" style="--i:3"/><rect x="3" y="11" width="1" height="1" fill="#F08A4B" style="--i:2"/><rect x="4" y="11" width="1" height="1" fill="#F08A4B" style="--i:1"/><rect x="5" y="11" width="1" height="1" fill="#F08A4B" style="--i:0"/><rect x="6" y="11" width="1" height="1" fill="#F08A4B" style="--i:3"/><rect x="7" y="11" width="1" height="1" fill="#F08A4B" style="--i:2"/><rect x="8" y="11" width="1" height="1" fill="#F08A4B" style="--i:1"/></svg><!--/sprite--></div>
+    <h1 class="dt-display"><span class="dt-brand">dev<i>.txt</i><sup>™</sup></span></h1>
+    <p class="lede">Бесплатные приложения для Windows с открытым исходным кодом: выглядят как одно целое и работают вместе.</p>
+    <div class="hero-actions">
+      <a class="dt-btn dt-btn--primary" style="--dt-tint: var(--dt-brand)" href="https://github.com/cxxperman/core.txt/releases/latest">Скачать core.txt</a>
+      <a class="dt-btn" href="https://github.com/cxxperman">Исходный код</a>
+    </div>
+    <p class="dt-caption">Только для Windows · сделано в Украине</p>
+  </header>
+
+  <main>
+    <section class="block" aria-labelledby="apps">
+      <h2 class="dt-display" id="apps">Приложения</h2>
+      <div class="cards">
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile"><!--sprite:core--><svg viewBox="-1 0 12 12" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="5" y="0" width="1" height="1" fill="#F08A4B"/><rect x="4" y="1" width="2" height="1" fill="#F08A4B"/><rect x="1" y="2" width="8" height="1" fill="#F08A4B"/><rect x="0" y="3" width="10" height="1" fill="#F08A4B"/><rect x="1" y="4" width="8" height="1" fill="#F08A4B"/><rect x="2" y="5" width="6" height="1" fill="#F08A4B"/><rect x="3" y="6" width="2" height="1" fill="#F08A4B"/><rect x="5" y="6" width="1" height="1" fill="#1A1A1E"/><rect x="6" y="6" width="1" height="1" fill="#F08A4B"/><rect x="3" y="7" width="2" height="1" fill="#F08A4B"/><rect x="5" y="7" width="1" height="1" fill="#1A1A1E"/><rect x="6" y="7" width="1" height="1" fill="#F08A4B"/><rect x="2" y="8" width="6" height="1" fill="#F08A4B"/><rect x="1" y="9" width="8" height="1" fill="#F08A4B"/><rect x="0" y="10" width="10" height="1" fill="#F08A4B"/><rect x="1" y="11" width="8" height="1" fill="#F08A4B"/></svg><!--/sprite--></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">core<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Лаунчер: одно окно для всех приложений</p>
+            </div>
+          </div>
+          <p class="text">Ставит, обновляет и запускает приложения, собирает их настройки на одной странице и связывает их между собой.</p>
+          <div class="foot">
+            <span class="dt-status dt-status--ok">С него удобно начать</span>
+            <a class="dt-btn" href="https://github.com/cxxperman/core.txt/releases/latest">Скачать</a>
+          </div>
+        </article>
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile"><img src="assets/kapsula.png" alt="" width="36" height="36"></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">kapsula<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Остров для Windows: музыка, уведомления, буфер и зверёк</p>
+            </div>
+          </div>
+          <p class="text">«Остров» в духе выреза на MacBook: маленькая капсула у верхнего края экрана раскрывается в панель с музыкой, буфером обмена, заметками и погодой. В капсуле живёт пиксельный зверёк.</p>
+          <div class="foot">
+            <span class="dt-status dt-status--ok">Ранняя альфа</span>
+            <a class="dt-btn" href="https://github.com/cxxperman/kapsula">GitHub</a>
+          </div>
+        </article>
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile"><!--sprite:aura--><svg viewBox="0 -1 12 12" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="4" y="0" width="2" height="1" fill="#F08A4B"/><rect x="3" y="1" width="4" height="1" fill="#F08A4B"/><rect x="11" y="1" width="1" height="1" fill="#F08A4B"/><rect x="2" y="2" width="6" height="1" fill="#F08A4B"/><rect x="10" y="2" width="2" height="1" fill="#F08A4B"/><rect x="1" y="3" width="11" height="1" fill="#F08A4B"/><rect x="0" y="4" width="2" height="1" fill="#F08A4B"/><rect x="2" y="4" width="1" height="1" fill="#1A1A1E"/><rect x="3" y="4" width="8" height="1" fill="#F08A4B"/><rect x="0" y="5" width="2" height="1" fill="#F08A4B"/><rect x="2" y="5" width="1" height="1" fill="#1A1A1E"/><rect x="3" y="5" width="8" height="1" fill="#F08A4B"/><rect x="1" y="6" width="11" height="1" fill="#F08A4B"/><rect x="2" y="7" width="6" height="1" fill="#F08A4B"/><rect x="10" y="7" width="2" height="1" fill="#F08A4B"/><rect x="3" y="8" width="4" height="1" fill="#F08A4B"/><rect x="11" y="8" width="1" height="1" fill="#F08A4B"/><rect x="4" y="9" width="2" height="1" fill="#F08A4B"/></svg><!--/sprite--></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">aura<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Студийная обработка голоса с микрофона</p>
+            </div>
+          </div>
+          <p class="text">Обрабатывает голос в реальном времени: характер голоса, шумоподавление на нейросетях, а в системном режиме обработанный голос слышат все программы без виртуального кабеля.</p>
+          <div class="foot">
+            <span class="dt-status dt-status--ok">Ранняя сборка</span>
+            <a class="dt-btn" href="https://github.com/cxxperman/aura-voice">GitHub</a>
+          </div>
+        </article>
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile"><!--sprite:maska--><svg viewBox="0 -2 12 12" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="0" y="0" width="1" height="1" fill="#F08A4B"/><rect x="11" y="0" width="1" height="1" fill="#F08A4B"/><rect x="0" y="1" width="2" height="1" fill="#F08A4B"/><rect x="10" y="1" width="2" height="1" fill="#F08A4B"/><rect x="0" y="2" width="12" height="1" fill="#F08A4B"/><rect x="0" y="3" width="3" height="1" fill="#F08A4B"/><rect x="3" y="3" width="1" height="1" fill="#1A1A1E"/><rect x="4" y="3" width="4" height="1" fill="#F08A4B"/><rect x="8" y="3" width="1" height="1" fill="#1A1A1E"/><rect x="9" y="3" width="3" height="1" fill="#F08A4B"/><rect x="0" y="4" width="3" height="1" fill="#F08A4B"/><rect x="3" y="4" width="1" height="1" fill="#1A1A1E"/><rect x="4" y="4" width="4" height="1" fill="#F08A4B"/><rect x="8" y="4" width="1" height="1" fill="#1A1A1E"/><rect x="9" y="4" width="3" height="1" fill="#F08A4B"/><rect x="0" y="5" width="12" height="1" fill="#F08A4B"/><rect x="1" y="6" width="4" height="1" fill="#F08A4B"/><rect x="7" y="6" width="4" height="1" fill="#F08A4B"/><rect x="2" y="7" width="2" height="1" fill="#F08A4B"/><rect x="8" y="7" width="2" height="1" fill="#F08A4B"/></svg><!--/sprite--></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">maska<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Ваш облик и звонки для Discord</p>
+            </div>
+          </div>
+          <div class="foot">
+            <span class="dt-status dt-status--warn">в разработке</span>
+          </div>
+        </article>
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile"><!--sprite:arkada--><svg viewBox="0 -2 12 12" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="1" y="0" width="4" height="1" fill="#F08A4B"/><rect x="7" y="0" width="4" height="1" fill="#F08A4B"/><rect x="0" y="1" width="12" height="1" fill="#F08A4B"/><rect x="0" y="2" width="2" height="1" fill="#F08A4B"/><rect x="2" y="2" width="1" height="1" fill="#1A1A1E"/><rect x="3" y="2" width="6" height="1" fill="#F08A4B"/><rect x="9" y="2" width="1" height="1" fill="#1A1A1E"/><rect x="10" y="2" width="2" height="1" fill="#F08A4B"/><rect x="0" y="3" width="1" height="1" fill="#F08A4B"/><rect x="1" y="3" width="3" height="1" fill="#1A1A1E"/><rect x="4" y="3" width="4" height="1" fill="#F08A4B"/><rect x="8" y="3" width="1" height="1" fill="#1A1A1E"/><rect x="9" y="3" width="1" height="1" fill="#F08A4B"/><rect x="10" y="3" width="1" height="1" fill="#1A1A1E"/><rect x="11" y="3" width="1" height="1" fill="#F08A4B"/><rect x="0" y="4" width="2" height="1" fill="#F08A4B"/><rect x="2" y="4" width="1" height="1" fill="#1A1A1E"/><rect x="3" y="4" width="6" height="1" fill="#F08A4B"/><rect x="9" y="4" width="1" height="1" fill="#1A1A1E"/><rect x="10" y="4" width="2" height="1" fill="#F08A4B"/><rect x="0" y="5" width="12" height="1" fill="#F08A4B"/><rect x="0" y="6" width="4" height="1" fill="#F08A4B"/><rect x="8" y="6" width="4" height="1" fill="#F08A4B"/><rect x="1" y="7" width="2" height="1" fill="#F08A4B"/><rect x="9" y="7" width="2" height="1" fill="#F08A4B"/></svg><!--/sprite--></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">arkada<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Игры и уведомления Steam в общем стиле</p>
+            </div>
+          </div>
+          <div class="foot">
+            <span class="dt-status dt-status--warn">в разработке</span>
+          </div>
+        </article>
+
+        <article class="dt-block dt-block--card card">
+          <div class="head">
+            <span class="dt-tile" aria-hidden="true"><span class="dt-title">d</span></span>
+            <div>
+              <h3 class="dt-title"><span class="dt-brand">dock<i>.txt</i><sup>™</sup></span></h3>
+              <p class="dt-caption">Док для Windows</p>
+            </div>
+          </div>
+          <div class="foot">
+            <span class="dt-status dt-status--warn">в разработке</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="how">
+      <h2 class="dt-display" id="how">Как всё связано</h2>
+      <ul class="rows">
+        <li class="dt-row">
+          <h3 class="dt-heading">Один лаунчер</h3>
+          <p class="dt-caption">core.txt показывает каждое приложение: стоит ли оно, какая версия, запущено ли, есть ли обновление. Ставит и обновляет из релизов GitHub; файл принимается, только если его размер и контрольная сумма SHA-256 совпали с указанными в релизе.</p>
+        </li>
+        <li class="dt-row">
+          <h3 class="dt-heading">Один вид</h3>
+          <p class="dt-caption">Цвета, стекло, шрифты, кнопки и переключатели у всех приложений общие. У каждого продукта — свой пиксельный значок в одном стиле.</p>
+        </li>
+        <li class="dt-row">
+          <h3 class="dt-heading">Одна страница настроек</h3>
+          <p class="dt-caption">Общие настройки — акцентный цвет, «Меньше движения» — применяются ко всем приложениям сразу. Свои настройки каждое приложение присылает в core.txt, и он рисует их одинаково.</p>
+        </li>
+        <li class="dt-row">
+          <h3 class="dt-heading">Локальный хаб</h3>
+          <p class="dt-caption">Приложения видят друг друга через хаб внутри core.txt. Хаб — дополнение, а не условие: каждое приложение работает и само по себе.</p>
+        </li>
+        <li class="dt-row">
+          <h3 class="dt-heading">Всё остаётся на компьютере</h3>
+          <p class="dt-caption">Хаб слушает только адрес 127.0.0.1: то, что приложения говорят друг другу, не уходит с компьютера, а страница в браузере подключиться к нему не может.</p>
+        </li>
+      </ul>
+      <div class="shots">
+        <figure>
+          <img src="assets/core-apps.png" width="1380" height="960" loading="lazy" alt="Окно core.txt: карточки kapsula.txt, aura.txt, maska.txt и arkada.txt с версиями и кнопками «Открыть»">
+          <figcaption class="dt-caption">core.txt: приложения</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/core-settings.png" width="1380" height="960" loading="lazy" alt="Страница настроек core.txt: акцентный цвет, «Меньше движения», запуск вместе с Windows, обновления">
+          <figcaption class="dt-caption">core.txt: общие настройки</figcaption>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom dt-caption">
+    <p><span class="dt-brand">dev<i>.txt</i><sup>™</sup></span> · бесплатно, исходный код открыт. kapsula.txt и aura.txt распространяются по лицензии MIT.</p>
+    <p><a href="https://github.com/cxxperman">github.com/cxxperman</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
